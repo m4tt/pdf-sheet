@@ -1,3 +1,4 @@
+/* MHB modified */
 /* PDF: https://media.wizards.com/2016/dnd/downloads/5E_CharacterSheet_Fillable.pdf */
 [
   /* Page #1 */
@@ -144,10 +145,10 @@
   { "pdf": "CP", "foundry": @system.currency.cp || "" },
   { "pdf": "ProficienciesLang", "foundry": (function() {
       let s = "";
+/* MHB: show all profs
       let a = @system.traits.weaponProf.value.map(x => game.dnd5e.config.weaponProficiencies[x]
         || game.packs.get("dnd5e.items").index.get(game.dnd5e.config.weaponIds[x])?.name).first();
       let b = @system.traits.weaponProf.custom.split(";").filter(x => String(x) && x?.length);
-
       if (a?.length > 0) { s = `${s}Weapons: ${a} ${b.join(', ')}\n`; }
       a = @system.traits.armorProf.value.map(x => game.dnd5e.config.armorProficiencies[x]
         || game.packs.get("dnd5e.items").index.get(game.dnd5e.config.armorIds[x])?.name).first();
@@ -160,6 +161,19 @@
       a = @system.traits.languages.value.map(x => game.dnd5e.config.languages[x]).first();
       b = @system.traits.languages.custom.split(";").filter(x => String(x) && x?.length);
       if (a?.length > 0) { s = `${s}Languages: ${a} ${b.join(', ')}\n`; }
+*/
+      let a = @system.traits.weaponProf.value.map(x => game.dnd5e.config.weaponProficiencies[x]
+        || game.packs.get("dnd5e.items").index.get(game.dnd5e.config.weaponIds[x])?.name);
+      if (a?.size > 0) { s = `${s}Weapons: ${Array.from(a).join(", ")}\n`; }
+      a = @system.traits.armorProf.value.map(x => game.dnd5e.config.armorProficiencies[x]
+        || game.packs.get("dnd5e.items").index.get(game.dnd5e.config.armorIds[x])?.name);
+      if (a?.size > 0) { s = `${s}Armor: ${Array.from(a).join(", ")}\n`; }
+      a = @system.traits.toolProf.value.map(x => game.dnd5e.config.toolProficiencies[x]
+        || game.packs.get("dnd5e.items").index.get(game.dnd5e.config.toolIds[x])?.name);
+      if (a?.size > 0) { s = `${s}Tools: ${Array.from(a).join(", ")}\n`; }
+      a = @system.traits.languages.value.map(x => game.dnd5e.config.languages[x]);
+      if (a?.size > 0) { s = `${s}Languages: ${Array.from(a).join(", ")}\n`; }
+/* End MHB */
       return s;
     })()
   },
@@ -168,12 +182,15 @@
   { "pdf": "GP", "foundry": @system.currency.gp || "" },
   { "pdf": "PP", "foundry": @system.currency.pp || "" },
   { "pdf": "Equipment", "foundry": @items.filter(i => ['weapon', 'equipment', 'tool'].includes(i.type)).map(i => (i.system.quantity <= 1) ? i.name : `${i.name} (${i.system.quantity})`).join(', ') },
+/* MHB: just the feature/trait name and source
   { "pdf": "Features and Traits", "foundry": @items.filter(i => ["feat", "trait"].includes(i.type)).slice(0, 16).map(i => `${i.name} - ${i.system.source}: \n${((h) => {
       const d = document.createElement("div");
       d.innerHTML = h;
       return d.textContent || d.innerText || "";
     })(i.system.description.value.substring(0,299))}${(i.system.description.value.length>300)?'...':''}\n`).join("\n")
   },
+*/
+  { "pdf": "Features and Traits", "foundry": @items.filter(i => ['feat', 'trait'].includes(i.type)).slice(0, 24).map(i => `${i.name} - ${i.system.source}`).join('\n') },
 
   /* Page #2 */
 
@@ -193,7 +210,10 @@
       return d.textContent || d.innerText || "";
     })(@system.details.biography.value)
   },
+/* MHB
   { "pdf": "Feat+Traits", "foundry": @items.filter(i => ['feat', 'trait'].includes(i.type)).slice(16).map(i => `${i.name} - ${i.system.source}`).join('\n') },
+*/
+  { "pdf": "Feat+Traits", "foundry": @items.filter(i => ['feat', 'trait'].includes(i.type)).slice(24).map(i => `${i.name} - ${i.system.source}`).join('\n') },
   { "pdf": "Treasure", "foundry": @items.filter(i => ['backpack', 'consumable', 'loot'].includes(i.type)).map(i => (i.system.quantity <= 1) ? i.name : `${i.name} (${i.system.quantity})`).join(', ') },
 
   /* Page #3 */
